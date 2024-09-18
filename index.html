@@ -155,9 +155,13 @@
                 const target = new Date(berlinNow);
                 target.setHours(13, 0, 0, 0);
 
-                // Wenn die aktuelle Zeit nach 13:00 Uhr ist, setze das Ziel auf morgen 13:00 Uhr
-                if (berlinNow > target) {
-                    target.setDate(target.getDate() + 1); // Nächster Tag
+                // Erstelle eine Zeitmarke für 13:30 Uhr
+                const cutoff = new Date(berlinNow);
+                cutoff.setHours(13, 30, 0, 0);
+
+                // Wenn die aktuelle Zeit nach 13:30 Uhr ist, setze die Zielzeit auf den nächsten Tag 13:00 Uhr
+                if (berlinNow > cutoff) {
+                    target.setDate(target.getDate() + 1); // Nächster Tag 13:00 Uhr
                 }
 
                 // Berechne die Zeitdifferenz in Millisekunden
@@ -168,9 +172,12 @@
                 const minutes = Math.floor((diff / (1000 * 60)) % 60);
                 const seconds = Math.floor((diff / 1000) % 60);
 
+                // Berechne, ob die Differenz negativ ist (zwischen 13:00 und 13:30 Uhr)
+                const isNegative = berlinNow > target && berlinNow <= cutoff;
+
                 // Countdown-Text anzeigen
                 document.getElementById('countdown').textContent =
-                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    `${isNegative ? '-' : ''}${Math.abs(hours).toString().padStart(2, '0')}:${Math.abs(minutes).toString().padStart(2, '0')}:${Math.abs(seconds).toString().padStart(2, '0')}`;
             }
 
             // Countdown jede Sekunde aktualisieren
@@ -183,7 +190,7 @@
             <div data-hfs-widget="true">
                 <img src="https://lh4.googleusercontent.com/iLMRIco3eOsYXc9-sojTD7mIuyDOfSPokJKPmsahM_gnCE6JXBU7eCQqZvQvibRrctg6WL-53x1QztuwPfd_jltl1VsUrKgDWiIRRtCTKWkXBNT4CXJmpCTHxolp5SzL3A=w2116" alt="Bildbeschreibung" style="max-width: 100%; height: auto;">
             </div>
-            <p>Unten in Hof / Gebäude B - Anmelden nicht vergessen!</p>
+            <p>Unten im Hof / Gebäude B - Anmelden nicht vergessen!</p>
         </div>
         <div class="scroll-container">
         <div class="iframe-container">
