@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F&S-Kleins</title>
+    <script async src="https://fahrinfo.vbb.de/webapp/staticfiles/hafas-widget-core.1.0.0.js?language=de_DE"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;700&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Fira Sans', sans-serif;
+            height: 100vh;
+            background-image: url('Background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content:  center;
+            align-items: center;
+            color: black;
+        }
+        .header {
+            background-color: rgba(233, 75, 53, 0);
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            color: white;
+            position: relative; /* Enable relative positioning */
+            left: 10%; /* Adjust this value to move the header further right */
+            margin-top: 20px; /* Verschiebt den gesamten Header nach unten */
+        }
+        .header h1 {
+            margin-top: 20px;
+            font-weight: 500;
+            margin: 0;
+            font-size: 6em;
+        }
+        .header p {
+            margin-top: 20px;
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch; /*Damit die Container in der Höhe variabel sind */
+            width: 90%; /* Breite des Inhalts relativ zum Viewport */
+            margin-top: 40px;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 60%; /* Höhe des Inhalts relativ zum Viewport */
+            border: 2px solid rgba(233, 75, 53, 0); /* Optional: unsichtbare Grenze */
+        }
+
+        .pic-container, .scroll-container, .wid-container {
+            flex: 1; /* Alle Container bekommen gleiche Breite */
+            margin: 5px;
+            display: flex;
+            justify-content: center;  /*Zentriert den Inhalt horizontal */
+            align-items: center;  /*Zentriert den Inhalt vertikal */
+            box-sizing: border-box;
+            flex-direction: column; /* Inhalt wird vertikal angeordnet */
+        }
+
+        .pic-container {
+            text-align: left;
+            padding: 10px;
+            height: 30%; /* Behalte die volle Höhe des Widgets */
+            margin-top: 200px;
+            background-color: rgba(208, 208, 208, 0.0); /*  transparente Hintergrundfarbe */
+        }
+
+        .pic-container > div[data-hfs-widget="true"] {
+            font-size: 2em;
+            margin: 0;
+            display: inline-block;
+            padding: 5px 15px;
+            position: relative;
+        }
+
+        .pic-container p {
+            font-size: 1em;
+            margin-top: 10px;
+            color: gray;
+        }
+
+        .scroll-container {
+            display: flex; /* Flexbox aktivieren */
+            justify-content: center; /* Horizontales Zentrieren */
+            align-items: center; /* Vertikales Zentrieren */
+            width: 100%;
+            height: 70%; /* Behalte die volle Höhe des Widgets */
+            margin-top: 100px;
+            overflow: hidden; /* Versteckt den Überfluss*/
+            overflow-y: auto; /* Scrollbar aktivieren */
+            /* Scrollbars im Container ausblenden */
+            scrollbar-width: none; /* Für Firefox */
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none; /* Für Webkit-Browser (z.B. Chrome, Safari) */
+        }
+
+        .scroll-container::after {
+            content: '';
+            height: 1000px; /* Scrollt 500px nach unten, wenn der Container geladen wird */
+            display: block;
+        }
+
+        .iframe-container iframe {
+            width: 150%;
+            height: 1800px; /* Größe des iframes größer als der Container, damit gescrollt wird */
+            border: none;
+        }
+
+        .wid-container {
+            justify-content: center; /* Horizontales Zentrieren */
+            align-items: center; /* Vertikales Zentrieren */
+            text-align: left;
+            margin-top: 100px;
+            padding: 10px;
+            transform: scale(0.5); /* Skaliert das Widget auf 50% */
+            transform-origin: center; /* Skaliert vom Zentrum des Widgets */
+            max-width: 500px; /* Optionale maximale Breite, um den Container zu begrenzen */
+            background-color: rgba(208, 208, 208, 0.0); /*  transparente Hintergrundfarbe */
+        }
+
+        .wid-container > div[data-hfs-widget="true"] {
+            font-size: 2em;
+            margin: 0;
+            display: inline-block;
+            padding: 5px 5px;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Kleins Bistro</h1>
+        <p>Countdown: <span id="countdown"></span> </p>
+        <script>
+            function updateCountdown() {
+                const now = new Date();
+                
+                // Holen der aktuellen Zeit in der Zeitzone "Europe/Berlin"
+                const berlinNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+
+                // Zielzeit (13:00 Uhr in der Zeitzone "Europe/Berlin")
+                const target = new Date(berlinNow);
+                target.setHours(13, 0, 0, 0);
+
+                // Wenn die aktuelle Zeit nach 13:00 Uhr ist, setze das Ziel auf morgen 13:00 Uhr
+                if (berlinNow > target) {
+                    target.setDate(target.getDate() + 1); // Nächster Tag
+                }
+
+                // Berechne die Zeitdifferenz in Millisekunden
+                const diff = target - berlinNow;
+
+                // Konvertiere die Differenz in Stunden, Minuten und Sekunden
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                // Countdown-Text anzeigen
+                document.getElementById('countdown').textContent =
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            // Countdown jede Sekunde aktualisieren
+            setInterval(updateCountdown, 1000);
+            window.onload = updateCountdown;
+        </script>
+    </div>
+    <div class="content">
+        <div class="pic-container">
+            <div data-hfs-widget="true">
+                <img src="https://lh4.googleusercontent.com/iLMRIco3eOsYXc9-sojTD7mIuyDOfSPokJKPmsahM_gnCE6JXBU7eCQqZvQvibRrctg6WL-53x1QztuwPfd_jltl1VsUrKgDWiIRRtCTKWkXBNT4CXJmpCTHxolp5SzL3A=w2116" alt="Bildbeschreibung" style="max-width: 100%; height: auto;">
+            </div>
+            <p>Unten in Hof / Gebäude B - Anmelden nicht vergessen!</p>
+        </div>
+        <div class="scroll-container">
+        <div class="iframe-container">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfSSwIrMGM_fBJauY44pb8iWZj8-xGH3sfRLW0Pxf9yuziIGQ/viewform?pli=1" width="1650" height="600" frameborder="0"></iframe>
+        </div>
+        </div>
+        <div class="wid-container">
+            <script src="https://static.elfsight.com/platform/platform.js" async></script>
+            <div class="elfsight-app-5f020eda-3611-47d6-acc8-eeffd484020c" data-elfsight-app-lazy></div>
+        </div>
+</body>
+</html>
