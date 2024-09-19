@@ -152,28 +152,34 @@
                 const berlinNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
 
                 // Zielzeit (13:00 Uhr in der Zeitzone "Europe/Berlin")
-                const target = new Date(berlinNow);
-                target.setHours(13, 0, 0, 0);
+                const target13 = new Date(berlinNow);
+                target13.setHours(13, 0, 0, 0);
 
-                // Erstelle eine Zeitmarke für 13:30 Uhr
-                const cutoff = new Date(berlinNow);
-                cutoff.setHours(13, 30, 0, 0);
+                // Zielzeit für 13:30 Uhr
+                const target1330 = new Date(berlinNow);
+                target1330.setHours(13, 30, 0, 0);
+
+                let diff, isNegative = false;
 
                 // Wenn die aktuelle Zeit nach 13:30 Uhr ist, setze die Zielzeit auf den nächsten Tag 13:00 Uhr
-                if (berlinNow > cutoff) {
-                    target.setDate(target.getDate() + 1); // Nächster Tag 13:00 Uhr
+                if (berlinNow > target1330) {
+                    target13.setDate(target13.getDate() + 1); // Nächster Tag 13:00 Uhr
+                    diff = target13 - berlinNow;
+                } 
+                // Wenn die aktuelle Zeit zwischen 13:00 und 13:30 Uhr ist, zähle negativ herunter
+                else if (berlinNow > target13 && berlinNow <= target1330) {
+                    diff = berlinNow - target13; // Positive Differenz, aber als negative Anzeige
+                    isNegative = true;
+                } 
+                // Ansonsten zähle bis 13:00 Uhr
+                else {
+                    diff = target13 - berlinNow;
                 }
-
-                // Berechne die Zeitdifferenz in Millisekunden
-                const diff = target - berlinNow;
 
                 // Konvertiere die Differenz in Stunden, Minuten und Sekunden
                 const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
                 const minutes = Math.floor((diff / (1000 * 60)) % 60);
                 const seconds = Math.floor((diff / 1000) % 60);
-
-                // Berechne, ob die Differenz negativ ist (zwischen 13:00 und 13:30 Uhr)
-                const isNegative = berlinNow > target && berlinNow <= cutoff;
 
                 // Countdown-Text im Format XX"h":YY"min":ZZ"sek" anzeigen
                 document.getElementById('countdown').textContent =
@@ -202,7 +208,7 @@
             <script>
                 // Funktion, die einen zufälligen Bildnamen erstellt
                 function getRandomImage() {
-                    const randomNumber = Math.floor(Math.random() * 6) + 1; // Zahl zwischen 1 und 8
+                    const randomNumber = Math.floor(Math.random() * 7) + 1; // Zahl zwischen 1 und 8
                     return `bild${randomNumber}.png`; // Bildname mit der Zufallszahl
                 }
 
