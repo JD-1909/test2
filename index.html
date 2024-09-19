@@ -143,7 +143,7 @@
 <body>
     <div class="header">
         <h1>Kleins Bistro</h1>
-        <p>Countdown: <span id="countdown"></span> </p>
+        <p>Das nächste Festmahl in: <span id="countdown"></span> </p>
         <script>
             function updateCountdown() {
                 const now = new Date();
@@ -175,10 +175,10 @@
                 // Berechne, ob die Differenz negativ ist (zwischen 13:00 und 13:30 Uhr)
                 const isNegative = berlinNow > target && berlinNow <= cutoff;
 
-                // Countdown-Text anzeigen
+                // Countdown-Text im Format XX"h":YY"min":ZZ"sek" anzeigen
                 document.getElementById('countdown').textContent =
-                    `${isNegative ? '-' : ''}${Math.abs(hours).toString().padStart(2, '0')}:${Math.abs(minutes).toString().padStart(2, '0')}:${Math.abs(seconds).toString().padStart(2, '0')}`;
-            }
+                     `${isNegative ? '-' : ''}${Math.abs(hours).toString().padStart(2, '0')}h:${Math.abs(minutes).toString().padStart(2, '0')}min:${Math.abs(seconds).toString().padStart(2, '0')}sek`;
+        }
 
             // Countdown jede Sekunde aktualisieren
             setInterval(updateCountdown, 1000);
@@ -198,7 +198,18 @@
         </div>
         </div>
         <div class="wid-container">
-            <img src="bild.png" alt="Lokal gespeichertes Bild" />
+            <img id="randomImage" alt="Hier sollte ein Bild von leckerem Essen sein" />
+            <script>
+                // Funktion, die einen zufälligen Bildnamen erstellt
+                function getRandomImage() {
+                    const randomNumber = Math.floor(Math.random() * 6) + 1; // Zahl zwischen 1 und 8
+                    return `bild${randomNumber}.png`; // Bildname mit der Zufallszahl
+                }
+
+                // Das zufällige Bild im HTML anzeigen
+                const imgElement = document.getElementById("randomImage");
+                imgElement.src = getRandomImage();
+            </script>
         </div>
 </body>
 </html>
