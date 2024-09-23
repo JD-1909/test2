@@ -150,7 +150,7 @@
                 
                 // Holen der aktuellen Zeit in der Zeitzone "Europe/Berlin"
                 const berlinNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
-
+                const dayOfWeek = berlinNow.getDay();
                 // Zielzeit (13:00 Uhr in der Zeitzone "Europe/Berlin")
                 const target13 = new Date(berlinNow);
                 target13.setHours(13, 0, 0, 0);
@@ -163,8 +163,7 @@
 
                 // Wenn die aktuelle Zeit nach 13:30 Uhr ist, setze die Zielzeit auf den nächsten Tag 13:00 Uhr
                 if (berlinNow > target1330) {
-                    const dayOfWeek = berlinNow.getDay();
-                    if (dayOfWeek === 5)|| dayOfWeek === 6) { // Freitag oder Samstag; 3 oder 2 Tage
+                    if (dayOfWeek === 5 || dayOfWeek === 6) { // Freitag oder Samstag; 3 oder 2 Tage
                         target13.setDate(target.getDate() + (8 - dayOfWeek)); // Montag = 1
                     } else { 
                         target13.setDate(target13.getDate() + 1); // Nächster Tag 13:00 Uhr
