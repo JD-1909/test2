@@ -163,7 +163,12 @@
 
                 // Wenn die aktuelle Zeit nach 13:30 Uhr ist, setze die Zielzeit auf den nächsten Tag 13:00 Uhr
                 if (berlinNow > target1330) {
-                    target13.setDate(target13.getDate() + 1); // Nächster Tag 13:00 Uhr
+                    const dayOfWeek = berlinNow.getDay();
+                    if (dayOfWeek === 5)|| dayOfWeek === 6) { // Freitag oder Samstag; 3 oder 2 Tage
+                        target13.setDate(target.getDate() + (8 - dayOfWeek)); // Montag = 1
+                    } else { 
+                        target13.setDate(target13.getDate() + 1); // Nächster Tag 13:00 Uhr
+                    }
                     diff = target13 - berlinNow;
                 } 
                 // Wenn die aktuelle Zeit zwischen 13:00 und 13:30 Uhr ist, zähle negativ herunter
